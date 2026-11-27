@@ -3,7 +3,7 @@
 <head><meta name="robots" content="noindex,nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foozi — Protótipo · Ajustes não aprovados</title>
+<title>Foozi — Protótipo navegável</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
@@ -1816,4 +1816,10 @@ wizGo(1);
 dgRender();
 CUR='';nav('dashboard');
 </script>
+
+<script>/* __hashnav: abre a tela indicada na URL, ex.: prototipo.html#mapa */
+(function(){var IDS=["dashboard","requisicoes","nova","cotacao","mapa","ordem","historico","reqauto","fornecedores","produtos","listacompra","listaitens","estoque","contagem","configuracoes","conta","api","suporte"];
+function jump(){var h=(location.hash||"").replace(/^#/,"");if(IDS.indexOf(h)>=0&&typeof nav==="function"){try{nav(h)}catch(e){}}}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(jump,260)});else setTimeout(jump,260);
+window.addEventListener("hashchange",jump);})();</script>
 </body></html>
