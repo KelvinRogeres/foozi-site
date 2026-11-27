@@ -60,14 +60,14 @@ h2.hero{font-size:46px;line-height:1.06;font-weight:600;letter-spacing:-.028em;m
 .meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--t3);margin:-26px 0 40px;font-variant-numeric:tabular-nums}
 .meta i{font-style:normal;color:var(--ln)}
 /* ---------- capa / grafo ---------- */
-.cover{background:var(--br-ink);color:#fff;padding:52px 44px 42px;margin:0 0 54px;border-radius:26px;position:relative;overflow:hidden}
+.cover{background:var(--br-ink);color:#fff;padding:48px 40px 36px;margin:0 0 54px;border-radius:26px;position:relative;overflow:hidden}
 .cover:before{content:"";position:absolute;inset:-40% -10% auto auto;width:62%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(79,79,234,.5),transparent 68%);pointer-events:none}
 .cover h2{font-size:44px;line-height:1.04;font-weight:600;letter-spacing:-.03em;margin:0 0 14px;max-width:16ch;position:relative}
 .cover p{font-size:18px;line-height:1.46;color:rgba(255,255,255,.66);margin:0 0 30px;max-width:52ch;letter-spacing:-.012em;position:relative}
-.gwrap{position:relative;margin:0 -8px}
+.gwrap{position:relative;margin:4px -12px 0}
 .gwrap svg{display:block;width:100%;height:auto;overflow:visible}
-.gcol{font:600 10.5px var(--f);letter-spacing:.09em;text-transform:uppercase;fill:rgba(255,255,255,.42)}
-.gnode text{font:13px var(--f);letter-spacing:-.008em;fill:rgba(255,255,255,.82);transition:fill .18s var(--e)}
+.gcol{font:600 9.5px var(--f);letter-spacing:.09em;text-transform:uppercase;fill:rgba(255,255,255,.42)}
+.gnode text{font:12.5px var(--f);letter-spacing:-.008em;fill:rgba(255,255,255,.82);transition:fill .18s var(--e)}
 .gnode rect{fill:transparent}
 .gnode circle{transition:r .22s var(--e),fill-opacity .22s var(--e)}
 .gnode{cursor:pointer}
@@ -170,9 +170,9 @@ const main=document.getElementById('main'), navEl=document.getElementById('nav')
 /* ---------- grafo tripartite ---------- */
 const GCOL={d:'#ffffff',c:'#8b8bff',s:'#4fd1d1'};
 function buildGraph(){
-  const g=KB.graph, W=1000, X={d:185,c:520,s:845}, TOP=58, GAP=25;
+  const g=KB.graph, W=760, X={d:150,c:400,s:620}, TOP=52, GAP=24;
   const rows=Math.max(...g.cols.map(c=>c.nodes.length));
-  const H=TOP+(rows-1)*GAP+34;
+  const H=TOP+(rows-1)*GAP+22;
   const pos={};
   g.cols.forEach(col=>{
     const span=(rows-1)*GAP, off=(span-(col.nodes.length-1)*GAP)/2;
@@ -182,7 +182,7 @@ function buildGraph(){
   const edges=g.edges.map((e,i)=>{
     const a=pos[e.a],b=pos[e.b]; if(!a||!b) return '';
     const mx=(a.x+b.x)/2;
-    const sw=(.5+Math.sqrt(e.w/maxw)*1.9).toFixed(2);
+    const sw=(.45+Math.sqrt(e.w/maxw)*1.6).toFixed(2);
     return `<path class="gedge" data-a="${e.a}" data-b="${e.b}" stroke-width="${sw}"
       style="animation-delay:${(i%40)*9}ms"
       d="M${a.x} ${a.y} C${mx} ${a.y} ${mx} ${b.y} ${b.x} ${b.y}"/>`;
@@ -190,17 +190,17 @@ function buildGraph(){
   const cut=(s,n)=>s.length>n?s.slice(0,n-1)+'…':s;
   const nodes=g.cols.map(col=>col.nodes.map((n,i)=>{
     const p=pos[n.id], anchor=col.k==='d'?'end':'start', dx=col.k==='d'?-13:13;
-    const r=(2.6+Math.min(n.n,30)/30*3.1).toFixed(2);
+    const r=(2.5+Math.min(n.n,30)/30*2.8).toFixed(2);
     const gap=col.k==='c'&&n.def===false, open=col.k==='s'&&n.n===0;
     const fill=gap||open?'#f0a94a':GCOL[col.k];
     return `<g class="gnode" data-id="${n.id}" style="animation-delay:${60+i*16}ms">
       <circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${fill}" fill-opacity="${gap||open?1:.9}"/>
-      <text x="${p.x+dx}" y="${p.y+4}" text-anchor="${anchor}"
-        style="paint-order:stroke;stroke:#0d0d2e;stroke-width:4.5px;stroke-linejoin:round">${esc(cut(n.label,19))}</text>
+      <text x="${p.x+dx}" y="${p.y+4.2}" text-anchor="${anchor}"
+        style="paint-order:stroke;stroke:#0d0d2e;stroke-width:4px;stroke-linejoin:round">${esc(cut(n.label,col.k==='d'?17:col.k==='c'?20:16))}</text>
     </g>`;}).join('')).join('');
   const heads=g.cols.map(col=>{
     const x=X[col.k], a=col.k==='d'?'end':'start';
-    return `<text class="gcol" x="${x+(col.k==='d'?-13:13)}" y="26" text-anchor="${a}">${esc(col.label)} · ${col.nodes.length}</text>`;
+    return `<text class="gcol" x="${x+(col.k==='d'?-13:13)}" y="22" text-anchor="${a}">${esc(col.label)} · ${col.nodes.length}</text>`;
   }).join('');
   return `<div class="gwrap" id="gw"><svg viewBox="0 0 ${W} ${H}" role="img"
     aria-label="Mapa de conexões entre ${g.cols[0].nodes.length} documentos, ${g.cols[1].nodes.length} conceitos e ${g.cols[2].nodes.length} telas">
