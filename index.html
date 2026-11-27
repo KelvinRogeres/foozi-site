@@ -144,6 +144,15 @@ h2.hero-t{font:700 40px/44px var(--fd);letter-spacing:-.009em;margin:0 0 12.75px
  .inner,.wrap{padding-left:21.25px;padding-right:21.25px}h2.hero-t{font-size:32px;line-height:36px}.deck{font-size:19px;line-height:25px}}
 @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 
+/* ---------- prévia da tela ---------- */
+.shot{margin:25.5px 0 0;border:1px solid var(--ln);border-radius:12px;overflow:hidden;background:var(--s2)}
+.shot-bar{display:flex;align-items:center;gap:6px;padding:0 12.75px;height:34px;background:var(--s3);border-bottom:1px solid var(--ln)}
+.shot-bar i{width:9px;height:9px;border-radius:50%;background:#48484d;display:block}
+.shot-bar span{margin-left:8.5px;font:400 12px/16px var(--f);letter-spacing:-.01em;color:var(--t3)}
+.shot-view{position:relative;width:100%;aspect-ratio:1440/860;overflow:hidden;background:#fff}
+.shot-view iframe{position:absolute;top:0;left:0;width:1440px;height:860px;border:0;
+ transform:scale(var(--k,.5556));transform-origin:0 0}
+
 @keyframes gin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @keyframes ein{from{stroke-opacity:0}to{stroke-opacity:.1}}
 .gnode{animation:gin .6s var(--e) backwards}
@@ -233,6 +242,13 @@ const chipsScr=(ids,lbl)=>!ids||!ids.length?'':`<div class="chips">${lbl?`<span 
 const refList=(refs,n=8)=>!refs.length?'<p class="empty">Nenhuma ocorrência.</p>':refs.slice(0,n).map(r=>
   `<button class="ref" data-go="doc:${r.doc}#${r.sec}"><b>${esc(r.secTitle)}</b><small>${esc(r.docTitle)} · ${esc(r.group)}${r.n?' · '+r.n+' menç'+(r.n>1?'ões':'ão'):''}</small>${r.snippet?`<q>…${esc(r.snippet)}…</q>`:''}</button>`).join('<div class="sep"></div>');
 
+
+function fitShots(){
+  document.querySelectorAll('.shot-view').forEach(v=>{
+    const w=v.getBoundingClientRect().width; if(w) v.style.setProperty('--k',(w/1440).toFixed(4))});
+}
+addEventListener('resize',fitShots);
+
 /* ---------- views ---------- */
 function viewHome(){
   const gaps=S.filter(s=>!s.sections.length), nodef=C.filter(c=>!c.hasDef);
@@ -290,11 +306,14 @@ function viewScr(id){
   const s=byScr[id]; if(!s) return;
   main.innerHTML=heroEl('Tela',s.label,s.desc,[s.sections.length?`<b>${s.sections.length}</b> seções`:'<b>sem documentação</b>',`<b>${s.concepts.length}</b> conceitos`],s.sections.length?'scr':'gap')
     +`<div class="wrap">
-    <div class="row" style="margin-top:0"><a class="btn" href="prototipo.html#${s.id}">Abrir no protótipo</a></div>
+    <div class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
+      <div class="shot-view"><iframe src="prototipo.html#${s.id}" loading="lazy" title="Tela ${esc(s.label)} no protótipo" tabindex="-1" scrolling="no"></iframe></div></div>
+    <div class="row" style="margin-top:17px"><a class="btn" href="prototipo.html#${s.id}">Abrir em tamanho real</a></div>
     ${!s.sections.length?`<div class="warn" style="margin-top:25.5px"><b>Sem documentação.</b> Esta tela existe no protótipo mas nenhum documento a descreve.</div>`:''}
     ${s.concepts.length?`<div class="rel"><h4>Conceitos em jogo</h4><p class="d">Regras que valem nesta tela.</p>${chipsCon(s.concepts)}</div>`:''}
     ${s.sections.length?`<div class="rel"><h4>Documentação desta tela</h4><p class="d">${s.sections.length} seções descrevem esta tela.</p>
       ${s.sections.slice(0,12).map(x=>`<button class="ref" data-go="doc:${x.doc}#${x.sec}"><b>${esc(x.secTitle)}</b><small>${esc(x.docTitle)} · ${x.words} palavras</small></button>`).join('<div class="sep"></div>')}</div>`:''}</div>`;
+  fitShots();
 }
 
 /* ---------- IA ---------- */
